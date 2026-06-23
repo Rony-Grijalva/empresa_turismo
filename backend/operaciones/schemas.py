@@ -64,3 +64,10 @@ class ReservaAdminUpdateSchema(Schema):
     estado_reserva: str
     estado_pago: Optional[str] = None
     metodo_pago_registro: Optional[str] = None
+
+class MensajeContactoIn(Schema):
+    nombre: str
+    email: str
+    telefono: Optional[str] = None
+    asunto: str
+    mensaje: str

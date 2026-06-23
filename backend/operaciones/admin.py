@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Conductor, Reserva, Servicio, Vehiculo
+from .models import Conductor, Reserva, Servicio, Vehiculo, MensajeContacto
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -139,3 +139,14 @@ class ReservaAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at', 'deleted_at')
         }),
     )
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Admin: MensajeContacto
+# ─────────────────────────────────────────────────────────────────────────────
+
+@admin.register(MensajeContacto)
+class MensajeContactoAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'email', 'asunto', 'fecha_creacion')
+    list_filter = ('fecha_creacion',)
+    search_fields = ('nombre', 'email', 'asunto', 'mensaje')
+    readonly_fields = ('fecha_creacion',)

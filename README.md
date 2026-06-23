@@ -17,4 +17,4 @@ Este es un sistema web integral diseñado para digitalizar y automatizar la gest
 ## Credenciales de Acceso Administrativo (Demo)
 
 - **Usuario**: `admin@grijalva.pe`
-- **Contraseña**: `admin123`
+- **Contraseña**: `Admin2026!`

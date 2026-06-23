@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import imgCoasterToyota from '../assets/foto_mg.png';
 import imgCoasterHyundai from '../assets/foto2_mg.png';
 import imgHilux from '../assets/foto3_mg.jpg';
+import imgFlotaHome from '../assets/foto3_mg.jpg';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -119,6 +120,34 @@ const Home = () => {
                 </Link>
               </div>
             </div>
+
+            {/* Servicio 2 */}
+            <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group border border-gray-100">
+              <div className="h-48 bg-amber-100 overflow-hidden flex items-center justify-center">
+                <span className="text-6xl group-hover:scale-110 transition-transform duration-500">🏢</span>
+              </div>
+              <div className="p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Transporte de Personal</h3>
+                <p className="text-gray-600 mb-6 line-clamp-3">Movilidad segura y puntual para los colaboradores de su empresa con rutas corporativas.</p>
+                <Link to="/servicios" className="text-orange-500 font-bold hover:text-orange-600 flex items-center group-hover:translate-x-1 transition-transform">
+                  Leer más →
+                </Link>
+              </div>
+            </div>
+
+            {/* Servicio 3 */}
+            <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group border border-gray-100">
+              <div className="h-48 bg-slate-100 overflow-hidden flex items-center justify-center">
+                <span className="text-6xl group-hover:scale-110 transition-transform duration-500">✈️</span>
+              </div>
+              <div className="p-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Traslados al Aeropuerto</h3>
+                <p className="text-gray-600 mb-6 line-clamp-3">Servicio exclusivo, rápido y seguro para sus viajes de negocios o familiares.</p>
+                <Link to="/servicios" className="text-orange-500 font-bold hover:text-orange-600 flex items-center group-hover:translate-x-1 transition-transform">
+                  Leer más →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -128,7 +157,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="w-full lg:w-1/2 relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="../assets/flota-placeholder.jpg" alt="Flota" className="w-full h-auto bg-gray-200 animate-pulse" />
+                <img src={imgFlotaHome} alt="Flota" className="w-full h-auto object-cover rounded-2xl shadow-2xl transition-transform hover:scale-[1.02]" />
             </div>
             <div className="w-full lg:w-1/2">
               <span className="text-orange-500 font-bold uppercase tracking-wider text-sm mb-2 block">Garantía y Seguridad</span>

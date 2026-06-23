@@ -5,8 +5,8 @@ from datetime import date
 import uuid
 from uuid import UUID
 
-from operaciones.models import Reserva, Servicio, Vehiculo, Conductor
-from operaciones.schemas import ReservaCreateSchema, ReservaOutSchema, ReservaAdminUpdateSchema, Schema, ModelSchema
+from operaciones.models import Reserva, Servicio, Vehiculo, Conductor, MensajeContacto
+from operaciones.schemas import ReservaCreateSchema, ReservaOutSchema, ReservaAdminUpdateSchema, Schema, ModelSchema, MensajeContactoIn
 
 class ServicioOutSchema(ModelSchema):
     class Meta:
@@ -129,3 +129,17 @@ def listar_reservas(request):
         reservas = Reserva.objects.all()
     
     return reservas
+
+@router.post("/contacto/", response={200: dict})
+def recibir_contacto(request, payload: MensajeContactoIn):
+    """
+    Recibe los datos del formulario de contacto y los guarda en la base de datos.
+    """
+    MensajeContacto.objects.create(
+        nombre=payload.nombre,
+        email=payload.email,
+        telefono=payload.telefono,
+        asunto=payload.asunto,
+        mensaje=payload.mensaje
+    )
+    return {"success": True, "message": "Mensaje enviado"}
