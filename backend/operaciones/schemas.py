@@ -71,3 +71,22 @@ class MensajeContactoIn(Schema):
     telefono: Optional[str] = None
     asunto: str
     mensaje: str
+
+class ReservaEstadoUpdateSchema(Schema):
+    estado_reserva: str
+
+class ReservaInSchema(Schema):
+    cliente_id: int
+    servicio_id: UUID
+    vehiculo_id: Optional[UUID] = None
+    conductor_id: Optional[UUID] = None
+    fecha_servicio: date
+    hora_servicio: time
+    cantidad_pasajeros: int
+    origen: str
+    destino: str
+    tarifa_final: Decimal
+    estado_reserva: str
+    estado_pago: Optional[str] = None
+    metodo_pago_registro: Optional[str] = None
+    notas: Optional[str] = None

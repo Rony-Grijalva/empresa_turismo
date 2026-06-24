@@ -273,6 +273,7 @@ class MensajeContacto(models.Model):
     telefono = models.CharField(max_length=20, blank=True, null=True, verbose_name='Teléfono')
     asunto = models.CharField(max_length=200, verbose_name='Asunto')
     mensaje = models.TextField(verbose_name='Mensaje')
+    leido = models.BooleanField(default=False, verbose_name='Leído')
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Creación')
 
     class Meta:

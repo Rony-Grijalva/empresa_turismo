@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'usuarios',
     'operaciones',
     'corsheaders',
+    'ninja_extra',
+    'ninja_jwt',
 ]
 
 # Modelo de usuario personalizado
