@@ -18,3 +18,4 @@ Este es un sistema web integral diseñado para digitalizar y automatizar la gest
 
 - **Usuario**: `admin@grijalva.pe`
 - **Contraseña**: `Admin2026!`
+ 
