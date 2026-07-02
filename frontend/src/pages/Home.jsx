@@ -152,7 +152,37 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 4. SECCIÓN NUESTRA FLOTA (Resumen) */}
+      {/* 4. NUESTROS CLIENTES (Confianza) */}
+      <section className="py-20 bg-gray-50 border-t border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          <div className="text-center mb-12">
+            <span className="text-orange-500 font-bold uppercase tracking-wider text-sm mb-2 block">Confían en Nosotros</span>
+            <h2 className="text-3xl font-serif font-extrabold text-blue-950 mb-4">Nuestros Clientes</h2>
+            <p className="text-gray-500 max-w-2xl mx-auto">Empresas e instituciones que respaldan la calidad, puntualidad y seguridad de nuestros servicios de transporte a nivel nacional.</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
+            {/* Cliente 1 */}
+            <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide">ONPE</span>
+            </div>
+            {/* Cliente 2 */}
+            <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Mochilea<br/>Perú</span>
+            </div>
+            {/* Cliente 3 */}
+            <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Travel<br/>Perú</span>
+            </div>
+            {/* Cliente 4 */}
+            <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
+              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Minera<br/>Millotingo</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. SECCIÓN NUESTRA FLOTA (Resumen) */}
       <section id="flota" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">

@@ -6,6 +6,7 @@ import Servicios from './pages/Servicios';
 import Flota from './pages/Flota';
 import Reservas from './pages/Reservas';
 import Contacto from './pages/Contacto';
+import Clientes from './pages/Clientes';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="nosotros" element={<Nosotros />} />
           <Route path="servicios" element={<Servicios />} />
           <Route path="flota" element={<Flota />} />
+          <Route path="clientes" element={<Clientes />} />
           <Route path="reservas" element={<Reservas />} />
           <Route path="contacto" element={<Contacto />} />
         </Route>

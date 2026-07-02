@@ -94,8 +94,8 @@ class ReservaAdmin(admin.ModelAdmin):
         'codigo_reserva',
         'cliente',
         'servicio',
-        'fecha_servicio',
-        'hora_servicio',
+        'fecha_hora_inicio',
+        'fecha_hora_fin',
         'cantidad_pasajeros',
         'vehiculo',
         'conductor',
@@ -103,7 +103,7 @@ class ReservaAdmin(admin.ModelAdmin):
         'tarifa_final',
     )
     list_display_links = ('codigo_reserva',)
-    list_filter = ('estado_reserva', 'fecha_servicio', 'servicio')
+    list_filter = ('estado_reserva', 'fecha_hora_inicio', 'servicio')
     search_fields = (
         'codigo_reserva',
         'cliente__email',
@@ -113,8 +113,8 @@ class ReservaAdmin(admin.ModelAdmin):
         'origen',
         'destino',
     )
-    ordering = ('-fecha_servicio',)
-    date_hierarchy = 'fecha_servicio'
+    ordering = ('-fecha_hora_inicio',)
+    date_hierarchy = 'fecha_hora_inicio'
     autocomplete_fields = ('cliente', 'servicio', 'vehiculo', 'conductor')
     readonly_fields = ('id', 'created_at', 'updated_at', 'deleted_at')
     fieldsets = (
@@ -125,7 +125,7 @@ class ReservaAdmin(admin.ModelAdmin):
             'fields': ('cliente', 'servicio')
         }),
         ('Detalles del Viaje', {
-            'fields': ('fecha_servicio', 'hora_servicio', 'cantidad_pasajeros', 'origen', 'destino', 'tarifa_final')
+            'fields': ('fecha_hora_inicio', 'fecha_hora_fin', 'cantidad_pasajeros', 'origen', 'destino', 'tarifa_final')
         }),
         ('Recursos Asignados', {
             'fields': ('vehiculo', 'conductor')

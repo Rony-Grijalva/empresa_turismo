@@ -6,8 +6,9 @@ const Reservas = () => {
   const [formData, setFormData] = useState({
     nombre: '',
     correo: '',
-    fecha_servicio: '',
-    hora_servicio: '',
+    telefono: '',
+    fecha_hora_inicio: '',
+    fecha_hora_fin: '',
     cantidad_pasajeros: 1,
     origen: '',
     destino: '',
@@ -43,6 +44,9 @@ const Reservas = () => {
     try {
       const payload = {
         ...formData,
+        cliente_nombre: formData.nombre,
+        cliente_correo: formData.correo,
+        cliente_telefono: formData.telefono,
         servicio_id: formData.servicio_id,
         cantidad_pasajeros: parseInt(formData.cantidad_pasajeros, 10)
       };
@@ -108,7 +112,7 @@ const Reservas = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nombre Completo</label>
               <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
@@ -116,6 +120,10 @@ const Reservas = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Correo Electrónico</label>
               <input type="email" name="correo" value={formData.correo} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono / WhatsApp</label>
+              <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
             </div>
           </div>
 
@@ -140,15 +148,17 @@ const Reservas = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-              <input type="date" name="fecha_servicio" value={formData.fecha_servicio} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Fecha/Hora Inicio</label>
+              <input type="datetime-local" step="60" name="fecha_hora_inicio" value={formData.fecha_hora_inicio} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hora</label>
-              <input type="time" name="hora_servicio" value={formData.hora_servicio} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Fecha/Hora Fin</label>
+              <input type="datetime-local" step="60" name="fecha_hora_fin" value={formData.fecha_hora_fin} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />
             </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Pasajeros</label>
               <input type="number" min="1" name="cantidad_pasajeros" value={formData.cantidad_pasajeros} onChange={handleChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none" required />

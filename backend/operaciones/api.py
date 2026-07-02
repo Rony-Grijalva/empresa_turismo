@@ -27,30 +27,23 @@ def crear_reserva(request, payload: ReservaCreateSchema):
     """
     Crea una nueva reserva desde la web.
     La tarifa referencial se asigna como tarifa final provisional.
-    El cliente se debe tomar del request.user (requiere auth), pero por ahora 
-    usaremos el primer usuario si no está autenticado para demostración.
     """
-    cliente = request.user
-    if not cliente.is_authenticated:
-        # Placeholder para desarrollo si no hay auth:
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        cliente = User.objects.first() 
-        if not cliente:
-            raise Http404("No hay usuarios en el sistema")
-
+    # Tarifa referencial pasa a tarifa final temporalmente
+    
     servicio = get_object_or_404(Servicio, id=payload.servicio_id)
 
     # Generar código único básico, e.g. MG-XXXX
     codigo = f"MG-{str(uuid.uuid4().int)[:6]}"
-
-    # Tarifa referencial pasa a tarifa final temporalmente
+    
     reserva = Reserva.objects.create(
         codigo_reserva=codigo,
-        cliente=cliente,
+        cliente=None,  # No vinculamos usuario auth
+        cliente_nombre=payload.cliente_nombre,
+        cliente_correo=payload.cliente_correo,
+        cliente_telefono=payload.cliente_telefono,
         servicio=servicio,
-        fecha_servicio=payload.fecha_servicio,
-        hora_servicio=payload.hora_servicio,
+        fecha_hora_inicio=payload.fecha_hora_inicio,
+        fecha_hora_fin=payload.fecha_hora_fin,
         cantidad_pasajeros=payload.cantidad_pasajeros,
         origen=payload.origen,
         destino=payload.destino,
@@ -72,30 +65,30 @@ def admin_actualizar_reserva(request, reserva_id: UUID, payload: ReservaAdminUpd
     
     reserva = get_object_or_404(Reserva, id=reserva_id)
 
-    from ninja.errors import HttpError
-    # Validar bloqueo de recursos por día completo
-    # Si se envía un vehículo, comprobar si ya está reservado ese día (y no es esta reserva)
+    # Validar bloqueo de recursos por solapamiento
+    from django.db.models import Q
+    
     if payload.vehiculo_id:
         reservas_mismo_vehiculo = Reserva.objects.filter(
-            fecha_servicio=reserva.fecha_servicio,
             vehiculo_id=payload.vehiculo_id
+        ).filter(
+            Q(fecha_hora_inicio__lt=reserva.fecha_hora_fin, fecha_hora_fin__gt=reserva.fecha_hora_inicio)
         ).exclude(id=reserva.id).exclude(
             estado_reserva__in=[Reserva.EstadoReserva.CANCELADA, Reserva.EstadoReserva.RECHAZADA]
         )
         if reservas_mismo_vehiculo.exists():
-            # Error de conflicto
-            raise HttpError(400, "El vehículo seleccionado ya está reservado para este día.")
+            raise HttpError(400, "El vehículo seleccionado ya está reservado para este horario.")
 
-    # Si se envía un conductor, comprobar si ya está reservado ese día
     if payload.conductor_id:
         reservas_mismo_conductor = Reserva.objects.filter(
-            fecha_servicio=reserva.fecha_servicio,
             conductor_id=payload.conductor_id
+        ).filter(
+            Q(fecha_hora_inicio__lt=reserva.fecha_hora_fin, fecha_hora_fin__gt=reserva.fecha_hora_inicio)
         ).exclude(id=reserva.id).exclude(
             estado_reserva__in=[Reserva.EstadoReserva.CANCELADA, Reserva.EstadoReserva.RECHAZADA]
         )
         if reservas_mismo_conductor.exists():
-            raise HttpError(400, "El conductor seleccionado ya está reservado para este día.")
+            raise HttpError(400, "El conductor seleccionado ya está reservado para este horario.")
 
     # Actualizar la reserva
     reserva.tarifa_final = payload.tarifa_final

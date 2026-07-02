@@ -27,13 +27,16 @@ const Layout = () => {
               <Link to="/" className="flex-shrink-0 flex items-center cursor-pointer">
                 <img src={logoGrijalva} alt="Logo Multiservicios Grijalva" className="w-48 sm:w-56 md:w-64 h-auto object-contain transition-transform hover:opacity-90" />
               </Link>
-              <div className="hidden md:flex items-center gap-6">
-                <Link to="/" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Inicio</Link>
-                <Link to="/nosotros" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Nosotros</Link>
-                <Link to="/servicios" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Servicios</Link>
-                <Link to="/flota" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Flota</Link>
-                <Link to="/contacto" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Contacto</Link>
-                <Link to="/reservas" className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-5 py-2.5 rounded-lg font-bold shadow-lg transform transition hover:-translate-y-1">
+              <div className="hidden md:flex items-center justify-end flex-1 ml-10">
+                <div className="flex items-center gap-6 lg:gap-8 mr-8">
+                  <Link to="/" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Inicio</Link>
+                  <Link to="/nosotros" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Nosotros</Link>
+                  <Link to="/servicios" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Servicios</Link>
+                  <Link to="/flota" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Flota</Link>
+                  <Link to="/clientes" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Clientes</Link>
+                  <Link to="/contacto" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Contacto</Link>
+                </div>
+                <Link to="/reservas" className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-lg font-bold shadow-md transform transition hover:-translate-y-1 whitespace-nowrap">
                   Programa tu Servicio
                 </Link>
               </div>

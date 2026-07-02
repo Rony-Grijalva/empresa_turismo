@@ -1,8 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { LayoutDashboard, LogOut, Settings, Users, Bus, Calendar } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, LogOut, Settings, Users, Bus, Calendar, Mail, UserCircle } from 'lucide-react';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken');
+    // Si hubiera un AuthContext, aquí se despacharía el LOGOUT.
+    navigate('/login');
+  };
+
   return (
     <div className="w-64 h-screen bg-slate-900 text-slate-300 flex flex-col shadow-2xl sticky top-0">
       <div className="p-6 border-b border-slate-800">
@@ -27,13 +35,25 @@ const Sidebar = () => {
           <li>
             <Link to="/flota" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
               <Bus size={20} />
-              <span>Flota</span>
+              <span>Flota y Mantenimiento</span>
             </Link>
           </li>
           <li>
             <Link to="/usuarios" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
               <Users size={20} />
               <span>Usuarios</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/conductores" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+              <UserCircle size={20} />
+              <span>Conductores</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/mensajes" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+              <Mail size={20} />
+              <span>Mensajes</span>
             </Link>
           </li>
           <li>
@@ -46,7 +66,10 @@ const Sidebar = () => {
       </nav>
 
       <div className="p-4 border-t border-slate-800">
-        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-900/50 hover:text-red-400 transition-colors">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 w-full rounded-lg hover:bg-red-900/50 hover:text-red-400 transition-colors"
+        >
           <LogOut size={20} />
           <span>Cerrar Sesión</span>
         </button>

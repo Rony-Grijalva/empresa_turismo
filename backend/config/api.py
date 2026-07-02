@@ -5,6 +5,7 @@ from ninja_extra import NinjaExtraAPI
 
 from operaciones.api import router as operaciones_router
 from operaciones.admin_api import admin_router
+from usuarios.admin_api import usuarios_admin_router
 
 api = NinjaExtraAPI(
     title="API de Multiservicios Grijalva",
@@ -16,6 +17,7 @@ api.register_controllers(NinjaJWTDefaultController)
 
 api.add_router("/operaciones/", operaciones_router)
 api.add_router("/admin/", admin_router)
+api.add_router("/admin/usuarios/", usuarios_admin_router)
 
 @api.get("/salud/", tags=["Salud"])
 def salud(request):
