@@ -24,9 +24,18 @@ const Reservas = () => {
     const fetchServicios = async () => {
       try {
         const response = await api.get('/servicios');
-        setServicios(response.data);
+        console.log('Respuesta cruda de API (Servicios):', response.data);
+        
+        if (response.data && response.data.results) {
+          setServicios(response.data.results);
+        } else if (Array.isArray(response.data)) {
+          setServicios(response.data);
+        } else {
+          console.error('Formato inesperado en la respuesta de servicios:', response.data);
+          setServicios([]);
+        }
       } catch (err) {
-        console.error('Error cargando servicios:', err);
+        console.error('Error exacto cargando servicios:', err.response?.data || err.message || err);
       }
     };
     fetchServicios();
