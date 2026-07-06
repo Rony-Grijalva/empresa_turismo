@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Instancia configurada para apuntar al backend Django Ninja
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/operaciones/',
+  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/operaciones/` : 'http://localhost:8000/api/operaciones/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
