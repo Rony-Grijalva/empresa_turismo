@@ -1,7 +1,19 @@
 import axios from 'axios';
 
+let baseURL = 'http://localhost:8000/api';
+if (import.meta.env.VITE_API_URL) {
+  let envUrl = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+  if (envUrl.endsWith('/api')) {
+    baseURL = envUrl;
+  } else {
+    baseURL = envUrl + '/api';
+  }
+}
+
+console.log('URL de destino (Admin):', baseURL);
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:8000/api',
+  baseURL: baseURL,
 });
 
 api.interceptors.request.use(

@@ -1,8 +1,22 @@
 import axios from 'axios';
 
+let baseURL = 'http://localhost:8000/api/operaciones/';
+if (import.meta.env.VITE_API_URL) {
+  let envUrl = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
+  if (envUrl.endsWith('/api/operaciones')) {
+    baseURL = envUrl + '/';
+  } else if (envUrl.endsWith('/api')) {
+    baseURL = envUrl + '/operaciones/';
+  } else {
+    baseURL = envUrl + '/api/operaciones/';
+  }
+}
+
+console.log('URL de destino (Frontend):', baseURL);
+
 // Instancia configurada para apuntar al backend Django Ninja
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/operaciones/` : 'http://localhost:8000/api/operaciones/',
+  baseURL: baseURL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
