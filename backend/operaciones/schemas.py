@@ -9,8 +9,11 @@ from operaciones.models import Reserva, Servicio, Vehiculo, Conductor, MensajeCo
 
 class ReservaCreateSchema(Schema):
     servicio_id: UUID
-    fecha_servicio: date
-    hora_servicio: time
+    cliente_nombre: str
+    cliente_correo: str
+    cliente_telefono: Optional[str] = None
+    fecha_hora_inicio: datetime
+    fecha_hora_fin: datetime
     cantidad_pasajeros: int = Field(..., gt=0)
     origen: str
     destino: str

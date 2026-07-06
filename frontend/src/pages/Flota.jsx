@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import foto1 from '../assets/foto_mg.png';
-import foto2 from '../assets/foto2_mg.png';
-import foto3 from '../assets/foto3_mg.jpg';
-import hero from '../assets/hero.png';
 
 const flotaData = [
   { 
     id: 1, 
     nombre: "Toyota Coaster", 
-    imagen: foto1, 
+    imagen: "/toy_coaster.jpg", 
     capacidad: "30 Pasajeros",
     descripcion: "Ideal para transporte de personal y turismo corporativo. Cuenta con un diseño espacioso y confortable para viajes largos y cortos.",
     novedades: ["Asientos reclinables ergonómicos", "Aire acondicionado centralizado", "GPS y monitoreo 24/7", "Cinturones de seguridad de 3 puntos"]
@@ -16,7 +12,7 @@ const flotaData = [
   { 
     id: 2, 
     nombre: "Hyundai County", 
-    imagen: foto2, 
+    imagen: "/hyund_county.jpg", 
     capacidad: "29 Pasajeros",
     descripcion: "Minibús versátil y seguro, perfecto para traslados ejecutivos y viajes turísticos de mediana distancia con la mayor comodidad.",
     novedades: ["Aire acondicionado potente", "Asientos reclinables", "Equipo de sonido y micrófono", "Amplio espacio para equipaje"]
@@ -24,7 +20,7 @@ const flotaData = [
   { 
     id: 3, 
     nombre: "Toyota Hiace", 
-    imagen: foto3, 
+    imagen: "/toyota_hiace.jpg", 
     capacidad: "15 Pasajeros",
     descripcion: "Minivan de alto rendimiento para grupos pequeños, destacada por su seguridad y confort interior inigualable.",
     novedades: ["Aire acondicionado doble zona", "Asientos confortables y amplios", "Frenos ABS y seguridad activa", "Sistema GPS integrado"]
@@ -32,7 +28,7 @@ const flotaData = [
   { 
     id: 4, 
     nombre: "Toyota Hilux (4x4)", 
-    imagen: hero, 
+    imagen: "/toyota_hilux.jpg", 
     capacidad: "4 Pasajeros",
     descripcion: "Camioneta pick-up todoterreno totalmente equipada para proyectos mineros y traslados a zonas de difícil acceso.",
     novedades: ["Tracción 4x4", "Equipamiento minero estándar", "Jaula antivuelco", "Aire acondicionado"]
@@ -53,11 +49,12 @@ const Flota = () => {
         </button>
 
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 flex flex-col md:flex-row">
-          <div className="md:w-1/2 bg-slate-50 p-8 flex items-center justify-center relative">
+          <div className="md:w-1/2 bg-slate-50 relative flex items-center justify-center overflow-hidden">
             <img 
               src={vehiculoSeleccionado.imagen} 
               alt={vehiculoSeleccionado.nombre} 
-              className="w-full h-auto max-h-[500px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500" 
+              className="w-full h-full min-h-[400px] object-cover hover:scale-105 transition-transform duration-500" 
+              onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
             />
           </div>
           <div className="md:w-1/2 p-10 lg:p-16 flex flex-col justify-center">
@@ -101,12 +98,13 @@ const Flota = () => {
             onClick={() => setVehiculoSeleccionado(vehiculo)}
             className="bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border border-gray-100 cursor-pointer transform transition-all duration-300 hover:-translate-y-2 hover:scale-105 group flex flex-col"
           >
-            <div className="h-56 bg-slate-50 relative overflow-hidden flex items-center justify-center p-4">
+            <div className="h-64 bg-slate-50 relative overflow-hidden flex items-center justify-center">
                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
                <img 
                  src={vehiculo.imagen} 
                  alt={vehiculo.nombre} 
-                 className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500 relative z-0" 
+                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 relative z-0" 
+                 onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }}
                />
             </div>
             <div className="p-6 flex-grow flex flex-col justify-between">

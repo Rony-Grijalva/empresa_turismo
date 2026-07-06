@@ -109,8 +109,8 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group border border-gray-100">
-              <div className="h-48 bg-blue-100 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600&auto=format&fit=crop" alt="Turismo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="h-48 overflow-hidden">
+                <img src="/trans_turistico.jpg" alt="Transporte Turístico" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Transporte Turístico</h3>
@@ -123,8 +123,8 @@ const Home = () => {
 
             {/* Servicio 2 */}
             <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group border border-gray-100">
-              <div className="h-48 bg-amber-100 overflow-hidden flex items-center justify-center">
-                <span className="text-6xl group-hover:scale-110 transition-transform duration-500">🏢</span>
+              <div className="h-48 overflow-hidden">
+                <img src="/trans_personal.png" alt="Transporte de Personal" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Transporte de Personal</h3>
@@ -137,8 +137,8 @@ const Home = () => {
 
             {/* Servicio 3 */}
             <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden group border border-gray-100">
-              <div className="h-48 bg-slate-100 overflow-hidden flex items-center justify-center">
-                <span className="text-6xl group-hover:scale-110 transition-transform duration-500">✈️</span>
+              <div className="h-48 overflow-hidden">
+                <img src="/transp_aer.jpg" alt="Traslados al Aeropuerto" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Traslados al Aeropuerto</h3>
@@ -164,19 +164,19 @@ const Home = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 items-center justify-items-center">
             {/* Cliente 1 */}
             <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide">ONPE</span>
+              <img src="/cl_onpe.png" alt="ONPE" className="object-contain h-16 grayscale hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
             </div>
             {/* Cliente 2 */}
             <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Mochilea<br/>Perú</span>
+              <img src="/cl1.jpg" alt="Mochilea Perú" className="object-contain h-16 grayscale hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
             </div>
             {/* Cliente 3 */}
             <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Travel<br/>Perú</span>
+              <img src="/cl_tp.jpg" alt="Travel Perú" className="object-contain h-16 grayscale hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
             </div>
             {/* Cliente 4 */}
             <div className="w-full h-28 bg-white rounded-xl flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100">
-              <span className="text-xl font-bold text-gray-500 font-serif tracking-wide text-center leading-tight">Minera<br/>Millotingo</span>
+              <img src="/cl_mill.jpg" alt="Minera Millotingo" className="object-contain h-16 grayscale hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
             </div>
           </div>
         </div>

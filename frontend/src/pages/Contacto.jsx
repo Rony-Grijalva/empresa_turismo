@@ -68,8 +68,14 @@ const Contacto = () => {
             </div>
           </div>
           
-          <div className="mt-8 bg-gray-200 h-64 rounded-xl flex items-center justify-center text-gray-500 font-bold">
-            [ Placeholder Google Maps ]
+          <div className="relative w-full h-64 mt-6 overflow-hidden rounded-xl shadow-inner bg-gray-100">
+            <iframe 
+              className="absolute top-0 left-0 w-full h-full border-0"
+              loading="lazy" 
+              allowFullScreen 
+              referrerPolicy="no-referrer-when-downgrade" 
+              src="https://maps.google.com/maps?q=Carretera%20Central%20Km%2053.5,%20Lima,%20Peru&t=&z=15&ie=UTF8&iwloc=&output=embed">
+            </iframe>
           </div>
         </div>
 

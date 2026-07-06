@@ -48,6 +48,8 @@ const Reservas = () => {
         cliente_correo: formData.correo,
         cliente_telefono: formData.telefono,
         servicio_id: formData.servicio_id,
+        fecha_hora_inicio: new Date(formData.fecha_hora_inicio).toISOString(),
+        fecha_hora_fin: new Date(formData.fecha_hora_fin).toISOString(),
         cantidad_pasajeros: parseInt(formData.cantidad_pasajeros, 10)
       };
 

@@ -16,19 +16,19 @@ const Clientes = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center mt-12">
           {/* Cliente 1 */}
           <div className="w-full h-32 md:h-40 bg-white rounded-2xl flex items-center justify-center p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 group">
-            <span className="text-2xl md:text-3xl font-bold text-gray-400 group-hover:text-blue-900 transition-colors duration-300 font-serif tracking-wide">ONPE</span>
+            <img src="/cl_onpe.png" alt="ONPE" className="object-contain h-20 md:h-24 grayscale group-hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           </div>
           {/* Cliente 2 */}
           <div className="w-full h-32 md:h-40 bg-white rounded-2xl flex items-center justify-center p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 group">
-            <span className="text-2xl md:text-3xl font-bold text-gray-400 group-hover:text-blue-900 transition-colors duration-300 font-serif tracking-wide text-center leading-tight">Mochilea<br/>Perú</span>
+            <img src="/cl1.jpg" alt="Mochilea Perú" className="object-contain h-20 md:h-24 grayscale group-hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           </div>
           {/* Cliente 3 */}
           <div className="w-full h-32 md:h-40 bg-white rounded-2xl flex items-center justify-center p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 group">
-            <span className="text-2xl md:text-3xl font-bold text-gray-400 group-hover:text-blue-900 transition-colors duration-300 font-serif tracking-wide text-center leading-tight">Travel<br/>Perú</span>
+            <img src="/cl_tp.jpg" alt="Travel Perú" className="object-contain h-20 md:h-24 grayscale group-hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           </div>
           {/* Cliente 4 */}
           <div className="w-full h-32 md:h-40 bg-white rounded-2xl flex items-center justify-center p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 group">
-            <span className="text-2xl md:text-3xl font-bold text-gray-400 group-hover:text-blue-900 transition-colors duration-300 font-serif tracking-wide text-center leading-tight">Minera<br/>Millotingo</span>
+            <img src="/cl_mill.jpg" alt="Minera Millotingo" className="object-contain h-20 md:h-24 grayscale group-hover:grayscale-0 transition-all duration-300" onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; }} />
           </div>
         </div>
 
