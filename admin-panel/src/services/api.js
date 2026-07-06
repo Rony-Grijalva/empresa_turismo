@@ -6,6 +6,7 @@ console.log('URL de destino (Admin) HARDCODED:', baseURL);
 
 const api = axios.create({
   baseURL: baseURL,
+  timeout: 30000,
 });
 
 api.interceptors.request.use(

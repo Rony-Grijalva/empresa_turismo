@@ -7,7 +7,7 @@ console.log('URL de destino (Frontend) HARDCODED:', baseURL);
 // Instancia configurada para apuntar al backend Django Ninja
 const api = axios.create({
   baseURL: baseURL,
-  timeout: 10000,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   }
