@@ -1,16 +1,8 @@
 import axios from 'axios';
 
-let baseURL = 'http://localhost:8000/api';
-if (import.meta.env.VITE_API_URL) {
-  let envUrl = import.meta.env.VITE_API_URL.replace(/\/+$/, '');
-  if (envUrl.endsWith('/api')) {
-    baseURL = envUrl;
-  } else {
-    baseURL = envUrl + '/api';
-  }
-}
+let baseURL = 'https://empresa-turismo.onrender.com/api';
 
-console.log('URL de destino (Admin):', baseURL);
+console.log('URL de destino (Admin) HARDCODED:', baseURL);
 
 const api = axios.create({
   baseURL: baseURL,
