@@ -25,7 +25,7 @@ const Reservas = () => {
   useEffect(() => {
     const fetchServicios = async () => {
       try {
-        const response = await api.get('/servicios');
+        const response = await api.get('servicios');
         console.log('Respuesta cruda de API (Servicios):', response.data);
         
         if (response.data && response.data.results) {
@@ -64,7 +64,7 @@ const Reservas = () => {
         cantidad_pasajeros: parseInt(formData.cantidad_pasajeros, 10)
       };
 
-      const response = await api.post('/reservas', payload);
+      const response = await api.post('reservas', payload);
 
       setCodigoReserva(response.data?.codigo_reserva || '');
       setSuccess(true);

@@ -23,7 +23,7 @@ const Seguimiento = () => {
     setError('');
     setReserva(null);
     try {
-      const { data } = await api.get(`/reservas/seguimiento/${encodeURIComponent(codigo.trim())}`);
+      const { data } = await api.get(`reservas/seguimiento/${encodeURIComponent(codigo.trim())}`);
       setReserva(data);
     } catch (err) {
       if (err.response?.status === 404) {

@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 // En local se usa VITE_API_URL (definida en .env.local); en producción (Vercel)
-// se usa el respaldo hacia el backend de Render.
-let baseURL = import.meta.env.VITE_API_URL || 'https://empresa-turismo.onrender.com/api/operaciones/';
+// forzamos la URL correcta del backend para evitar errores 404 por mala configuración de VITE_API_URL.
+let baseURL = import.meta.env.PROD 
+  ? 'https://empresa-turismo.onrender.com/api/operaciones/'
+  : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api/operaciones/');
 
 console.log('URL de destino (Frontend):', baseURL);
 
