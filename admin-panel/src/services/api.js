@@ -39,8 +39,8 @@ export default api;
 
 export const adminService = {
   // --- DASHBOARD & CALENDAR ---
-  getDashboardStats: () => api.get('/admin/dashboard/stats/'),
-  getDashboardChart: () => api.get('/admin/dashboard/chart/'),
+  getDashboardStats: (params) => api.get('/admin/dashboard/stats/', { params }),
+  getDashboardChart: (params) => api.get('/admin/dashboard/chart/', { params }),
   exportReservasCsv: () => api.get('/admin/reportes/reservas-csv/', { responseType: 'blob' }),
   getCalendario: () => api.get('/admin/calendario/'),
 
@@ -62,8 +62,12 @@ export const adminService = {
   updateVehiculo: (id, data) => api.put(`/admin/vehiculos/${id}/`, data),
   deleteVehiculo: (id) => api.delete(`/admin/vehiculos/${id}/`),
 
-  // --- MANTENIMIENTOS ---
+
+  // --- MANTENIMIENTOS Y COMBUSTIBLE ---
   createMantenimiento: (data) => api.post('/admin/mantenimientos/', data),
+  createCombustible: (data) => api.post('/admin/combustible/', data),
+  getPlanificaciones: (params) => api.get('/admin/planificaciones/', { params }),
+  createPlanificacion: (data) => api.post('/admin/planificaciones/', data),
 
   // --- SERVICIOS ---
   getServicios: (params) => api.get('/admin/servicios/', { params }),

@@ -10,12 +10,28 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
 
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
+  const months = [
+    { value: 1, label: 'Enero' }, { value: 2, label: 'Febrero' },
+    { value: 3, label: 'Marzo' }, { value: 4, label: 'Abril' },
+    { value: 5, label: 'Mayo' }, { value: 6, label: 'Junio' },
+    { value: 7, label: 'Julio' }, { value: 8, label: 'Agosto' },
+    { value: 9, label: 'Septiembre' }, { value: 10, label: 'Octubre' },
+    { value: 11, label: 'Noviembre' }, { value: 12, label: 'Diciembre' }
+  ];
+  
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear - 1, currentYear, currentYear + 1];
+
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setLoading(true);
       try {
         const [statsRes, chartRes] = await Promise.all([
-          adminService.getDashboardStats(),
-          adminService.getDashboardChart()
+          adminService.getDashboardStats({ month: selectedMonth, year: selectedYear }),
+          adminService.getDashboardChart({ month: selectedMonth, year: selectedYear })
         ]);
         setStats(statsRes.data);
         setChartData(chartRes.data);
@@ -27,7 +43,7 @@ const Dashboard = () => {
       }
     };
     fetchDashboardData();
-  }, []);
+  }, [selectedMonth, selectedYear]);
 
   const handleExport = async () => {
     setExporting(true);
@@ -132,13 +148,37 @@ const Dashboard = () => {
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 mb-8">
-        <h3 className="text-lg font-semibold text-slate-800 mb-6">Tendencia de Reservas (Últimos 7 días)</h3>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <h3 className="text-lg font-semibold text-slate-800">
+            Tendencia de Reservas - {months.find(m => m.value === parseInt(selectedMonth))?.label} {selectedYear}
+          </h3>
+          <div className="flex gap-4">
+            <select 
+              value={selectedMonth} 
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {months.map(m => (
+                <option key={m.value} value={m.value}>{m.label}</option>
+              ))}
+            </select>
+            <select 
+              value={selectedYear} 
+              onChange={(e) => setSelectedYear(e.target.value)}
+              className="border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {years.map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
               <Line type="monotone" dataKey="reservas" stroke="#2563eb" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
               <CartesianGrid stroke="#f1f5f9" strokeDasharray="5 5" />
-              <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#64748b' }} tickLine={false} axisLine={false} />
+              <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} tickLine={false} axisLine={false} minTickGap={20} tickMargin={10} />
               <YAxis stroke="#64748b" tick={{ fill: '#64748b' }} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip 
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

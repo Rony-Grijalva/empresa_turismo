@@ -133,6 +133,7 @@ class VehiculoInSchema(ModelSchema):
 class VehiculoOutSchema(ModelSchema):
     requiere_mantenimiento: bool = False
     reservas_activas: List[dict] = []
+    ultimo_rendimiento: Optional[float] = None
     class Meta:
         model = Vehiculo
         fields = ['id', 'placa', 'marca', 'modelo', 'capacidad', 'anio', 'estado', 'tipo_vehiculo', 'capacidad_carga', 'kilometraje_actual', 'kilometraje_base', 'frecuencia_mantenimiento_km', 'detalles', 'created_at']
@@ -142,6 +143,9 @@ class VehiculoOutSchema(ModelSchema):
     @staticmethod
     def resolve_reservas_activas(obj):
         return []
+    @staticmethod
+    def resolve_ultimo_rendimiento(obj):
+        return obj.ultimo_rendimiento
 
 class VehiculoFilterSchema(FilterSchema):
     q: Optional[str] = Field(None, q='placa__icontains')
@@ -211,3 +215,33 @@ class CalculoCombustibleInSchema(Schema):
 
 class CalculoCombustibleOutSchema(Schema):
     costo_estimado: float
+
+class RegistroCombustibleInSchema(Schema):
+    vehiculo_id: UUID
+    fecha: date
+    odometro_actual: int
+    cantidad_litros: float
+    costo_total: float
+    tanque_lleno: bool
+
+class RegistroCombustibleOutSchema(ModelSchema):
+    class Meta:
+        from operaciones.models import RegistroCombustible
+        model = RegistroCombustible
+        fields = ['id', 'vehiculo', 'fecha', 'odometro_actual', 'cantidad_litros', 'costo_total', 'tanque_lleno', 'consumo_calculado', 'precio_por_litro', 'created_at']
+
+class PlanificacionViajeInSchema(Schema):
+    vehiculo_id: UUID
+    kilometraje_inicial: int
+    kilometraje_final: int
+    precio_galon: float
+    distancia: int
+    litros_estimados: float
+    costo_estimado: float
+
+class PlanificacionViajeOutSchema(ModelSchema):
+    vehiculo: VehiculoOutSchema
+    class Meta:
+        from operaciones.models import PlanificacionViaje
+        model = PlanificacionViaje
+        fields = ['id', 'vehiculo', 'fecha_planificacion', 'kilometraje_inicial', 'kilometraje_final', 'precio_galon', 'distancia', 'litros_estimados', 'costo_estimado']

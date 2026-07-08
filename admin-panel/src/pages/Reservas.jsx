@@ -31,7 +31,7 @@ const Reservas = () => {
   const [vehiculos, setVehiculos] = useState([]);
   const [conductores, setConductores] = useState([]);
   
-  const [combustibleInfo, setCombustibleInfo] = useState(null);
+
 
   const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
   
@@ -114,29 +114,6 @@ const Reservas = () => {
     }
   }, [watchInicio, watchFin, editingItem]);
 
-  useEffect(() => {
-    // Cálculo estimado de combustible al editar/seleccionar vehículo
-    const calcularCombustible = async () => {
-      if (editingItem && watchVehiculoId && watchVehiculoId !== '') {
-        try {
-          const vehiculo = vehiculos.find(v => v.id === watchVehiculoId);
-          // Asumimos 100km promedio si no hay distancia calculada y 10km/l, precio 15.00
-          const res = await adminService.calcularCombustible({
-            distancia_km: 150.0, // Mock de distancia de la ruta
-            consumo_vehiculo_km_por_litro: 12.0, // Mock de rendimiento
-            precio_combustible_por_litro: 18.50 // Precio actual (mock)
-          });
-          setCombustibleInfo(res.data.costo_estimado);
-        } catch (err) {
-          console.error("Error calculando combustible", err);
-          setCombustibleInfo(null);
-        }
-      } else {
-        setCombustibleInfo(null);
-      }
-    };
-    calcularCombustible();
-  }, [watchVehiculoId, vehiculos, editingItem]);
 
   const openModal = (item = null) => {
     setEditingItem(item);
@@ -561,12 +538,6 @@ const Reservas = () => {
                 <option value="">Ninguno</option>
                 {vehiculos.map(v => <option key={v.id} value={v.id}>{v.nombre}</option>)}
               </select>
-              {combustibleInfo && (
-                <div className="mt-2 text-xs bg-orange-50 text-orange-800 p-2 rounded-md border border-orange-100 flex items-center justify-between">
-                  <span>Cálculo Combustible Estimado:</span>
-                  <span className="font-bold">S/ {combustibleInfo}</span>
-                </div>
-              )}
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Conductor Asignado</label>

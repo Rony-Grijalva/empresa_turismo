@@ -82,6 +82,11 @@ class Vehiculo(BaseModel):
     def __str__(self):
         return f'{self.placa} — {self.marca} {self.modelo} ({self.get_estado_display()})'
 
+    @property
+    def ultimo_rendimiento(self):
+        ultimo = self.registros_combustible.filter(consumo_calculado__isnull=False).order_by('-fecha', '-created_at').first()
+        return ultimo.consumo_calculado if ultimo else None
+
     def save(self, *args, **kwargs):
         if not self.pk and self.kilometraje_base == 0:
             self.kilometraje_base = self.kilometraje_actual
@@ -400,3 +405,87 @@ class MensajeContacto(models.Model):
 
     def __str__(self):
         return f'{self.nombre} - {self.asunto}'
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Modelo: RegistroCombustible
+# ─────────────────────────────────────────────────────────────────────────────
+
+class RegistroCombustible(BaseModel):
+    vehiculo = models.ForeignKey(
+        Vehiculo,
+        on_delete=models.CASCADE,
+        related_name='registros_combustible',
+        verbose_name='Vehículo'
+    )
+    fecha = models.DateField(verbose_name='Fecha')
+    odometro_actual = models.IntegerField(verbose_name='Odómetro Actual (km)')
+    cantidad_litros = models.FloatField(verbose_name='Cantidad (Litros)')
+    costo_total = models.FloatField(verbose_name='Costo Total')
+    tanque_lleno = models.BooleanField(default=False, verbose_name='Tanque Lleno')
+    consumo_calculado = models.FloatField(null=True, blank=True, verbose_name='Consumo Calculado (L/100km)')
+    precio_por_litro = models.FloatField(null=True, blank=True, verbose_name='Precio por Litro')
+
+    class Meta:
+        db_table = 'registro_combustible'
+        verbose_name = 'Registro de Combustible'
+        verbose_name_plural = 'Registros de Combustible'
+        ordering = ['-fecha', '-created_at']
+
+    def save(self, *args, **kwargs):
+        
+        if self.cantidad_litros > 0:
+            self.precio_por_litro = round(self.costo_total / self.cantidad_litros, 2)
+        else:
+            self.precio_por_litro = 0
+
+        if self.tanque_lleno:
+
+            ultimo_llenado = RegistroCombustible.objects.filter(
+                vehiculo=self.vehiculo,
+                tanque_lleno=True,
+                odometro_actual__lt=self.odometro_actual
+            ).order_by('-odometro_actual').first()
+            
+            if ultimo_llenado:
+                distancia = self.odometro_actual - ultimo_llenado.odometro_actual
+                if distancia > 0:
+                    self.consumo_calculado = (self.cantidad_litros / distancia) * 100
+                else:
+                    self.consumo_calculado = None
+            else:
+                self.consumo_calculado = None
+        else:
+            self.consumo_calculado = None
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.vehiculo.placa} - {self.fecha} ({self.cantidad_litros} L)'
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Modelo: PlanificacionViaje
+# ─────────────────────────────────────────────────────────────────────────────
+
+class PlanificacionViaje(BaseModel):
+    vehiculo = models.ForeignKey(
+        Vehiculo,
+        on_delete=models.CASCADE,
+        related_name='planificaciones',
+        verbose_name='Vehículo'
+    )
+    fecha_planificacion = models.DateTimeField(auto_now_add=True, verbose_name='Fecha de Planificación')
+    kilometraje_inicial = models.IntegerField(verbose_name='Kilometraje Inicial')
+    kilometraje_final = models.IntegerField(verbose_name='Kilometraje Final')
+    precio_galon = models.FloatField(verbose_name='Precio del Galón')
+    distancia = models.IntegerField(verbose_name='Distancia (km)')
+    litros_estimados = models.FloatField(verbose_name='Litros Estimados')
+    costo_estimado = models.FloatField(verbose_name='Costo Estimado')
+
+    class Meta:
+        db_table = 'planificacion_viaje'
+        verbose_name = 'Planificación de Viaje'
+        verbose_name_plural = 'Planificaciones de Viajes'
+        ordering = ['-fecha_planificacion']
+
+    def __str__(self):
+        return f'Planificación {self.vehiculo.placa}'

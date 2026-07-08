@@ -30,16 +30,19 @@ def check_admin_or_superuser(request):
 # DASHBOARD STATS
 # ==========================================
 @admin_router.get("/dashboard/stats/", tags=["Admin", "Dashboard"])
-def get_dashboard_stats(request):
+def get_dashboard_stats(request, month: int = None, year: int = None):
     from django.utils.timezone import now
     from django.db.models import Sum, F
     
     today = date.today()
-    reservas_mes = Reserva.objects.filter(fecha_hora_inicio__year=today.year, fecha_hora_inicio__month=today.month)
+    target_year = year if year else today.year
+    target_month = month if month else today.month
+    
+    reservas_mes = Reserva.objects.filter(fecha_hora_inicio__year=target_year, fecha_hora_inicio__month=target_month)
     
     total_reservas = reservas_mes.count()
-    ingresos = reservas_mes.filter(estado_reserva__in=[Reserva.EstadoReserva.CONFIRMADA, Reserva.EstadoReserva.COMPLETADA]).aggregate(total=Sum('tarifa_final'))['total'] or 0
-    vehiculos_activos = Vehiculo.objects.exclude(estado__in=[Vehiculo.Estado.MANTENIMIENTO, Vehiculo.Estado.NO_DISPONIBLE]).count()
+    ingresos = reservas_mes.filter(estado_reserva=Reserva.EstadoReserva.COMPLETADA).aggregate(total=Sum('tarifa_final'))['total'] or 0
+    vehiculos_activos = Vehiculo.objects.filter(estado=Vehiculo.Estado.DISPONIBLE).count()
     mantenimientos_pendientes = Vehiculo.objects.filter(kilometraje_actual__gte=F('kilometraje_base') + F('frecuencia_mantenimiento_km')).count()
     
     return {
@@ -50,14 +53,20 @@ def get_dashboard_stats(request):
     }
 
 @admin_router.get("/dashboard/chart/", tags=["Admin", "Dashboard"])
-def get_dashboard_chart(request):
+def get_dashboard_chart(request, month: int = None, year: int = None):
     from django.db.models import Count
     from django.db.models.functions import TruncDate
+    import calendar
     
     today = date.today()
-    start_date = today - timedelta(days=6)
+    target_year = year if year else today.year
+    target_month = month if month else today.month
     
-    qs = Reserva.objects.filter(fecha_hora_inicio__date__range=[start_date, today])\
+    _, num_days = calendar.monthrange(target_year, target_month)
+    start_date = date(target_year, target_month, 1)
+    end_date = date(target_year, target_month, num_days)
+    
+    qs = Reserva.objects.filter(fecha_hora_inicio__date__range=[start_date, end_date])\
         .annotate(date=TruncDate('fecha_hora_inicio'))\
         .values('date')\
         .annotate(total=Count('id'))\
@@ -66,7 +75,7 @@ def get_dashboard_chart(request):
     data_dict = {str(d['date'])[:10]: d['total'] for d in qs}
     
     chart_data = []
-    for i in range(7):
+    for i in range(num_days):
         current_date = start_date + timedelta(days=i)
         chart_data.append({
             "name": current_date.strftime("%d/%m"),
@@ -291,7 +300,7 @@ def calcular_combustible_endpoint(request, payload: CalculoCombustibleInSchema):
 # ==========================================
 # MANTENIMIENTOS
 # ==========================================
-@admin_router.post("/mantenimientos/", tags=["Admin", "Mantenimientos"])
+@admin_router.post("/mantenimientos/", tags=["Admin", "Mantenimientos"], response={201: dict})
 def registrar_mantenimiento(request, payload: MantenimientoInSchema):
     from operaciones.models import Mantenimiento
     mantenimiento = Mantenimiento.objects.create(**payload.dict())
@@ -302,7 +311,32 @@ def registrar_mantenimiento(request, payload: MantenimientoInSchema):
     vehiculo.kilometraje_base = mantenimiento.kilometraje_realizado
     vehiculo.save()
     
-    return 201, {"success": True, "message": "Mantenimiento registrado y kilometraje actualizado"}
+    return 201, {"success": True}
+
+# ==========================================
+# REGISTRO DE COMBUSTIBLE
+# ==========================================
+from operaciones.schemas import RegistroCombustibleInSchema, RegistroCombustibleOutSchema
+from typing import List
+
+@admin_router.get("/combustible/", tags=["Admin", "Combustible"], response=List[RegistroCombustibleOutSchema])
+@paginate
+def listar_combustible(request, vehiculo_id: UUID = None, fecha_inicio: str = None, fecha_fin: str = None):
+    from operaciones.models import RegistroCombustible
+    qs = RegistroCombustible.objects.all()
+    if vehiculo_id:
+        qs = qs.filter(vehiculo_id=vehiculo_id)
+    if fecha_inicio:
+        qs = qs.filter(fecha__gte=fecha_inicio)
+    if fecha_fin:
+        qs = qs.filter(fecha__lte=fecha_fin)
+    return qs
+
+@admin_router.post("/combustible/", tags=["Admin", "Combustible"], response={201: RegistroCombustibleOutSchema})
+def crear_combustible(request, payload: RegistroCombustibleInSchema):
+    from operaciones.models import RegistroCombustible
+    registro = RegistroCombustible.objects.create(**payload.dict())
+    return 201, registro
 
 @admin_router.delete("/reservas/bulk/delete/", tags=["Admin", "Reservas", "Bulk"])
 def bulk_delete_reservas(request, payload: BulkIdsSchema):
@@ -473,7 +507,7 @@ def bulk_delete_mensajes(request, payload: BulkIntIdsSchema):
 # ==========================================
 # MANTENIMIENTOS
 # ==========================================
-@admin_router.post("/mantenimientos/", tags=["Admin", "Mantenimientos"])
+@admin_router.post("/mantenimientos/", tags=["Admin", "Mantenimientos"], response={201: dict})
 def crear_mantenimiento(request, payload: MantenimientoInSchema):
     mantenimiento = Mantenimiento.objects.create(**payload.dict())
     
@@ -547,3 +581,23 @@ def get_clientes_lookup(request):
     User = get_user_model()
     # Listamos clientes (generalmente no admins)
     return [{"id": str(u.id), "nombre": u.get_full_name() or u.email} for u in User.objects.all()]
+
+# ==========================================
+# PLANIFICACION DE VIAJE
+# ==========================================
+from operaciones.schemas import PlanificacionViajeInSchema, PlanificacionViajeOutSchema
+
+@admin_router.get("/planificaciones/", tags=["Admin", "Planificacion"], response=List[PlanificacionViajeOutSchema])
+@paginate
+def listar_planificaciones(request, vehiculo_id: UUID = None):
+    from operaciones.models import PlanificacionViaje
+    qs = PlanificacionViaje.objects.all()
+    if vehiculo_id:
+        qs = qs.filter(vehiculo_id=vehiculo_id)
+    return qs
+
+@admin_router.post("/planificaciones/", tags=["Admin", "Planificacion"], response={201: PlanificacionViajeOutSchema})
+def crear_planificacion(request, payload: PlanificacionViajeInSchema):
+    from operaciones.models import PlanificacionViaje
+    plan = PlanificacionViaje.objects.create(**payload.dict())
+    return 201, plan

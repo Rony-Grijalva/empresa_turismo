@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
-import { Plus } from 'lucide-react';
+import { Plus, Calculator } from 'lucide-react';
 import DataTable from '../components/DataTable';
 import ModalForm from '../components/ModalForm';
 import DetailModal from '../components/DetailModal';
+import ModalCombustible from '../components/ModalCombustible';
+import ModalPlanificador from '../components/ModalPlanificador';
 import { adminService } from '../services/api';
 
 const Flota = () => {
@@ -13,6 +15,8 @@ const Flota = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMantenimientoModalOpen, setIsMantenimientoModalOpen] = useState(false);
+  const [isCombustibleModalOpen, setIsCombustibleModalOpen] = useState(false);
+  const [isPlanificadorModalOpen, setIsPlanificadorModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [mantenimientoItem, setMantenimientoItem] = useState(null);
   
@@ -109,14 +113,56 @@ const Flota = () => {
 
   const onSubmitMantenimiento = async (formData) => {
     try {
-      await adminService.createMantenimiento(formData);
+      const payload = {
+        ...formData,
+        vehiculo_id: mantenimientoItem.id,
+        kilometraje_realizado: Number(formData.kilometraje_realizado),
+        costo: Number(formData.costo),
+        fecha: new Date(formData.fecha).toISOString().split('T')[0]
+      };
+      // Eliminar el campo 'vehiculo' viejo si react-hook-form lo incluye
+      delete payload.vehiculo;
+
+      await adminService.createMantenimiento(payload);
       setIsMantenimientoModalOpen(false);
       setMantenimientoItem(null);
       toast.success("Mantenimiento registrado correctamente.");
       loadData(pagination.page);
     } catch (error) {
-      console.error("Error saving mantenimiento:", error);
+      console.error("Error saving mantenimiento:", error.response?.data || error);
       toast.error("Ocurrió un error al registrar el mantenimiento.");
+    }
+  };
+
+  const onSubmitCombustible = async (formData) => {
+    try {
+      const payload = {
+        vehiculo_id: formData.vehiculo_id,
+        odometro_actual: Number(formData.odometro_actual),
+        cantidad_litros: Number(formData.cantidad_litros),
+        costo_total: Number(formData.costo_total),
+        tanque_lleno: formData.tanque_lleno,
+        fecha: new Date(formData.fecha).toISOString().split('T')[0]
+      };
+
+      await adminService.createCombustible(payload);
+      setIsCombustibleModalOpen(false);
+      toast.success("Combustible registrado correctamente.");
+      loadData(pagination.page);
+    } catch (error) {
+      console.error("Error saving combustible:", error.response?.data || error);
+      toast.error("Ocurrió un error al registrar el combustible.");
+    }
+  };
+
+  const onSubmitPlanificador = async (data) => {
+    try {
+      await adminService.createPlanificacion(data);
+      setIsPlanificadorModalOpen(false);
+      toast.success("Planificación de viaje guardada correctamente.");
+    } catch (error) {
+      console.error("Error saving planificacion:", error.response?.data || error);
+      toast.error("Ocurrió un error al guardar la planificación.");
     }
   };
 
@@ -229,13 +275,29 @@ const Flota = () => {
           <h1 className="text-2xl font-bold text-slate-800">Gestión de Flota</h1>
           <p className="text-slate-500 mt-1">Administra los vehículos y su disponibilidad.</p>
         </div>
-        <button 
-          onClick={() => openModal()}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <Plus size={20} />
-          <span>Añadir Vehículo</span>
-        </button>
+        <div className="flex gap-3">
+          <button 
+            onClick={() => setIsPlanificadorModalOpen(true)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Calculator size={20} />
+            <span>Planificar Viaje</span>
+          </button>
+          <button 
+            onClick={() => setIsCombustibleModalOpen(true)}
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus size={20} />
+            <span>Registrar Combustible</span>
+          </button>
+          <button 
+            onClick={() => openModal()}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+          >
+            <Plus size={20} />
+            <span>Añadir Vehículo</span>
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -275,6 +337,13 @@ const Flota = () => {
           )}
         </div>
       </DetailModal>
+
+      <ModalCombustible
+        isOpen={isCombustibleModalOpen}
+        onClose={() => setIsCombustibleModalOpen(false)}
+        onSubmit={onSubmitCombustible}
+        vehiculos={data}
+      />
 
       <ModalForm 
         isOpen={isModalOpen} 
@@ -491,6 +560,13 @@ const Flota = () => {
           </div>
         </form>
       </ModalForm>
+      
+      <ModalPlanificador 
+        isOpen={isPlanificadorModalOpen}
+        onClose={() => setIsPlanificadorModalOpen(false)}
+        onSubmit={onSubmitPlanificador}
+        vehiculos={data}
+      />
     </div>
   );
 };
