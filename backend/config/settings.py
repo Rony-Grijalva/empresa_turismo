@@ -173,3 +173,8 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Multiservicios Grijalva 
 # Tiempo máximo de espera del SMTP; evita que un servidor lento/bloqueado cuelgue el envío.
 EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=10)
 
+# Brevo (API HTTP de correo transaccional). Si se define, los correos se envían
+# por HTTPS en lugar de SMTP — necesario en Render gratuito, que bloquea el
+# puerto 587 saliente. Plan free de Brevo: 300 correos/día.
+BREVO_API_KEY = env('BREVO_API_KEY', default='')
+

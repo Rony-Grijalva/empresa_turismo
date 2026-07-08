@@ -18,10 +18,35 @@ from django.utils import timezone
 from django.core import mail
 from ninja.testing import TestClient
 
+from operaciones import api as operaciones_api
 from operaciones.api import router
 from operaciones.models import Servicio, Reserva, Vehiculo, Conductor
 
 client = TestClient(router)
+
+
+class _HiloInmediato:
+    """Sustituto de threading.Thread que ejecuta el target de forma síncrona.
+
+    El correo de confirmación se envía en un hilo en segundo plano; en las
+    pruebas eso genera carreras (el outbox se verifica antes de que el hilo
+    termine, o un hilo tardío de una prueba contamina la siguiente). Con este
+    doble, el envío ocurre en línea y las aserciones son deterministas.
+    """
+
+    def __init__(self, target=None, args=(), kwargs=None, daemon=None):
+        self._target = target
+        self._args = args
+        self._kwargs = kwargs or {}
+
+    def start(self):
+        if self._target:
+            self._target(*self._args, **self._kwargs)
+
+
+@pytest.fixture(autouse=True)
+def correos_sincronos(monkeypatch):
+    monkeypatch.setattr(operaciones_api.threading, "Thread", _HiloInmediato)
 
 
 @pytest.fixture

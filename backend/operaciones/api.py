@@ -2,13 +2,12 @@ from ninja import Router
 from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from django.core.mail import send_mail
-from django.conf import settings
 from datetime import date
 import uuid
 import threading
 from uuid import UUID
 
+from operaciones.correo import enviar_correo
 from operaciones.models import Reserva, Servicio, Vehiculo, Conductor, MensajeContacto
 from operaciones.schemas import ReservaCreateSchema, ReservaOutSchema, ReservaAdminUpdateSchema, Schema, ModelSchema, MensajeContactoIn
 
@@ -79,28 +78,23 @@ def crear_reserva(request, payload: ReservaCreateSchema):
 
 def _enviar_correo_confirmacion(reserva, servicio):
     """Envía el correo de confirmación de reserva (RF-05). No interrumpe el flujo si falla."""
-    try:
-        send_mail(
-            subject=f"Confirmación de reserva {reserva.codigo_reserva} — Multiservicios Grijalva",
-            message=(
-                f"Hola {reserva.cliente_nombre},\n\n"
-                f"Hemos recibido tu solicitud de reserva. Estos son tus datos:\n\n"
-                f"  • Código de seguimiento: {reserva.codigo_reserva}\n"
-                f"  • Servicio: {servicio.nombre}\n"
-                f"  • Fecha: {reserva.fecha_hora_inicio.strftime('%d/%m/%Y %H:%M')}\n"
-                f"  • Origen: {reserva.origen}\n"
-                f"  • Destino: {reserva.destino}\n\n"
-                f"Puedes consultar el estado de tu reserva ingresando tu código "
-                f"en la sección 'Seguimiento' de nuestra web.\n\n"
-                f"Gracias por confiar en nosotros.\n"
-                f"Multiservicios Grijalva SAC"
-            ),
-            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'reservas@grijalva.pe'),
-            recipient_list=[reserva.cliente_correo],
-            fail_silently=True,
-        )
-    except Exception:
-        pass
+    enviar_correo(
+        destinatario=reserva.cliente_correo,
+        asunto=f"Confirmación de reserva {reserva.codigo_reserva} — Multiservicios Grijalva",
+        mensaje=(
+            f"Hola {reserva.cliente_nombre},\n\n"
+            f"Hemos recibido tu solicitud de reserva. Estos son tus datos:\n\n"
+            f"  • Código de seguimiento: {reserva.codigo_reserva}\n"
+            f"  • Servicio: {servicio.nombre}\n"
+            f"  • Fecha: {reserva.fecha_hora_inicio.strftime('%d/%m/%Y %H:%M')}\n"
+            f"  • Origen: {reserva.origen}\n"
+            f"  • Destino: {reserva.destino}\n\n"
+            f"Puedes consultar el estado de tu reserva ingresando tu código "
+            f"en la sección 'Seguimiento' de nuestra web.\n\n"
+            f"Gracias por confiar en nosotros.\n"
+            f"Multiservicios Grijalva SAC"
+        ),
+    )
 
 @router.get("/reservas/seguimiento/{codigo}", response={200: ReservaOutSchema, 404: dict})
 def seguimiento_reserva(request, codigo: str):
