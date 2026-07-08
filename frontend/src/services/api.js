@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-let baseURL = 'https://empresa-turismo.onrender.com/api/operaciones/';
+// En local se usa VITE_API_URL (definida en .env.local); en producción (Vercel)
+// se usa el respaldo hacia el backend de Render.
+let baseURL = import.meta.env.VITE_API_URL || 'https://empresa-turismo.onrender.com/api/operaciones/';
 
-console.log('URL de destino (Frontend) HARDCODED:', baseURL);
+console.log('URL de destino (Frontend):', baseURL);
 
 // Instancia configurada para apuntar al backend Django Ninja
 const api = axios.create({

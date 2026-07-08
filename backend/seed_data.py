@@ -113,10 +113,10 @@ for data in servicios_data:
 # ─────────────────────────────────────────────────────────────────────────────
 print("\n[3/4] Creando vehículos...")
 vehiculos_data = [
-    {'placa': 'F3G-852', 'modelo': 'Hyundai H350 (Van)',                 'capacidad': 15, 'anio': 2022, 'estado': Vehiculo.Estado.DISPONIBLE},
-    {'placa': 'B5D-961', 'modelo': 'Toyota Hiace (Minivan)',             'capacidad': 12, 'anio': 2023, 'estado': Vehiculo.Estado.DISPONIBLE},
-    {'placa': 'A4P-741', 'modelo': 'Mercedes-Benz Sprinter (Minibús)',   'capacidad': 20, 'anio': 2021, 'estado': Vehiculo.Estado.DISPONIBLE},
-    {'placa': 'X7C-159', 'modelo': 'Scania K410 (Bus Interprovincial)',  'capacidad': 45, 'anio': 2020, 'estado': Vehiculo.Estado.MANTENIMIENTO},
+    {'placa': 'F3G-852', 'marca': 'Hyundai',       'modelo': 'H350 (Van)',                'capacidad': 15, 'anio': 2022, 'estado': Vehiculo.Estado.DISPONIBLE},
+    {'placa': 'B5D-961', 'marca': 'Toyota',        'modelo': 'Hiace (Minivan)',           'capacidad': 12, 'anio': 2023, 'estado': Vehiculo.Estado.DISPONIBLE},
+    {'placa': 'A4P-741', 'marca': 'Mercedes-Benz', 'modelo': 'Sprinter (Minibús)',        'capacidad': 20, 'anio': 2021, 'estado': Vehiculo.Estado.DISPONIBLE},
+    {'placa': 'X7C-159', 'marca': 'Scania',        'modelo': 'K410 (Bus Interprovincial)','capacidad': 45, 'anio': 2020, 'estado': Vehiculo.Estado.MANTENIMIENTO},
 ]
 
 for data in vehiculos_data:
@@ -132,7 +132,7 @@ conductores_data = [
     {'nombre': 'Carlos Mendoza',  'licencia': 'A-IIIc-987654', 'telefono': '987654321', 'estado': Conductor.Estado.DISPONIBLE},
     {'nombre': 'José Flores',     'licencia': 'A-IIIa-123456', 'telefono': '951847263', 'estado': Conductor.Estado.DISPONIBLE},
     {'nombre': 'Manuel Quispe',   'licencia': 'A-IIb-789012',  'telefono': '963258741', 'estado': Conductor.Estado.DISPONIBLE},
-    {'nombre': 'Ana Huamán',      'licencia': 'A-IIIc-345678', 'telefono': '921753654', 'estado': Conductor.Estado.EN_RUTA},
+    {'nombre': 'Ana Huamán',      'licencia': 'A-IIIc-345678', 'telefono': '921753654', 'estado': Conductor.Estado.NO_DISPONIBLE},
 ]
 
 for data in conductores_data:

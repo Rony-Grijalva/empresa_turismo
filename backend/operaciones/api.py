@@ -1,6 +1,9 @@
 from ninja import Router
+from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.core.mail import send_mail
+from django.conf import settings
 from datetime import date
 import uuid
 from uuid import UUID
@@ -32,9 +35,11 @@ def crear_reserva(request, payload: ReservaCreateSchema):
     
     servicio = get_object_or_404(Servicio, id=payload.servicio_id)
 
-    # Generar código único básico, e.g. MG-XXXX
-    codigo = f"MG-{str(uuid.uuid4().int)[:6]}"
-    
+    # Generar código único de seguimiento con formato MG-AAAA-NNNN (RF-04)
+    anio = date.today().year
+    correlativo = Reserva.objects.filter(codigo_reserva__startswith=f"MG-{anio}-").count() + 1
+    codigo = f"MG-{anio}-{correlativo:04d}"
+
     reserva = Reserva.objects.create(
         codigo_reserva=codigo,
         cliente=None,  # No vinculamos usuario auth
@@ -52,7 +57,50 @@ def crear_reserva(request, payload: ReservaCreateSchema):
         notas=payload.notas
     )
 
+    # RF-05: Enviar correo automático de confirmación al cliente
+    _enviar_correo_confirmacion(reserva, servicio)
+
     return 201, reserva
+
+
+def _enviar_correo_confirmacion(reserva, servicio):
+    """Envía el correo de confirmación de reserva (RF-05). No interrumpe el flujo si falla."""
+    try:
+        send_mail(
+            subject=f"Confirmación de reserva {reserva.codigo_reserva} — Multiservicios Grijalva",
+            message=(
+                f"Hola {reserva.cliente_nombre},\n\n"
+                f"Hemos recibido tu solicitud de reserva. Estos son tus datos:\n\n"
+                f"  • Código de seguimiento: {reserva.codigo_reserva}\n"
+                f"  • Servicio: {servicio.nombre}\n"
+                f"  • Fecha: {reserva.fecha_hora_inicio.strftime('%d/%m/%Y %H:%M')}\n"
+                f"  • Origen: {reserva.origen}\n"
+                f"  • Destino: {reserva.destino}\n\n"
+                f"Puedes consultar el estado de tu reserva ingresando tu código "
+                f"en la sección 'Seguimiento' de nuestra web.\n\n"
+                f"Gracias por confiar en nosotros.\n"
+                f"Multiservicios Grijalva SAC"
+            ),
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'reservas@grijalva.pe'),
+            recipient_list=[reserva.cliente_correo],
+            fail_silently=True,
+        )
+    except Exception:
+        pass
+
+@router.get("/reservas/seguimiento/{codigo}", response={200: ReservaOutSchema, 404: dict})
+def seguimiento_reserva(request, codigo: str):
+    """
+    RF-08: Consulta pública del estado de una reserva mediante su código de
+    seguimiento (formato MG-AAAA-NNNN). No requiere autenticación.
+    """
+    try:
+        reserva = Reserva.objects.select_related('servicio', 'vehiculo', 'conductor').get(
+            codigo_reserva__iexact=codigo.strip()
+        )
+    except Reserva.DoesNotExist:
+        return 404, {"detail": "No se encontró ninguna reserva con ese código."}
+    return 200, reserva
 
 @router.put("/reservas/{reserva_id}/admin", response={200: ReservaOutSchema})
 def admin_actualizar_reserva(request, reserva_id: UUID, payload: ReservaAdminUpdateSchema):

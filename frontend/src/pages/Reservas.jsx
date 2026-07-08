@@ -18,6 +18,8 @@ const Reservas = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [codigoReserva, setCodigoReserva] = useState('');
+  const [acepta, setAcepta] = useState(false);
 
   // Cargar servicios activos desde el backend
   useEffect(() => {
@@ -63,7 +65,8 @@ const Reservas = () => {
       };
 
       const response = await api.post('/reservas', payload);
-      
+
+      setCodigoReserva(response.data?.codigo_reserva || '');
       setSuccess(true);
       // Opcional: Redirigir al link de WhatsApp provisto por el backend
       // window.location.href = response.data.whatsapp_link;
@@ -101,8 +104,17 @@ const Reservas = () => {
             <span className="text-4xl text-green-500">✓</span>
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-4">¡Reserva Registrada!</h2>
-          <p className="text-gray-600 mb-8">Tu solicitud ha sido recibida. Nos pondremos en contacto contigo a la brevedad para confirmar los detalles finales.</p>
-          <button onClick={() => setSuccess(false)} className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition">
+          <p className="text-gray-600 mb-6">Tu solicitud ha sido recibida. Te enviamos un correo de confirmación y nos pondremos en contacto contigo a la brevedad.</p>
+
+          {codigoReserva && (
+            <div className="bg-amber-50 border-2 border-dashed border-amber-400 rounded-xl p-5 mb-8">
+              <p className="text-sm text-gray-600 mb-1">Tu código de seguimiento es:</p>
+              <p className="text-3xl font-extrabold tracking-widest text-amber-600">{codigoReserva}</p>
+              <p className="text-xs text-gray-500 mt-2">Guárdalo para consultar el estado de tu reserva en la sección <span className="font-semibold">Seguimiento</span>.</p>
+            </div>
+          )}
+
+          <button onClick={() => { setSuccess(false); setAcepta(false); setCodigoReserva(''); }} className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition">
             Volver
           </button>
         </div>
@@ -181,7 +193,24 @@ const Reservas = () => {
             <textarea name="notas" rows="3" value={formData.notas} onChange={handleChange} placeholder="Comentarios, requerimientos especiales..." className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-600 focus:border-transparent outline-none"></textarea>
           </div>
 
-          <button type="submit" disabled={loading} className={`w-full text-slate-900 font-bold py-4 rounded-lg shadow-lg transition-colors ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400'}`}>
+          <div className="flex items-start gap-3 bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <input
+              type="checkbox"
+              id="acepta_datos"
+              name="acepta_datos"
+              checked={acepta}
+              onChange={(e) => setAcepta(e.target.checked)}
+              className="mt-1 h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+              required
+            />
+            <label htmlFor="acepta_datos" className="text-sm text-gray-600">
+              Autorizo el tratamiento de mis datos personales conforme a la
+              <span className="font-semibold"> Ley N.° 29733</span> de Protección de Datos Personales,
+              con la finalidad de gestionar mi reserva y ser contactado por Multiservicios Grijalva.
+            </label>
+          </div>
+
+          <button type="submit" disabled={loading || !acepta} className={`w-full text-slate-900 font-bold py-4 rounded-lg shadow-lg transition-colors ${(loading || !acepta) ? 'bg-gray-400 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-400'}`}>
             {loading ? 'Procesando...' : 'Solicitar Propuesta'}
           </button>
         </form>

@@ -1,8 +1,10 @@
 import axios from 'axios';
 
-let baseURL = 'https://empresa-turismo.onrender.com/api';
+// En local se usa VITE_API_URL (definida en .env.local); en producción (Vercel)
+// se usa el respaldo hacia el backend de Render.
+let baseURL = import.meta.env.VITE_API_URL || 'https://empresa-turismo.onrender.com/api';
 
-console.log('URL de destino (Admin) HARDCODED:', baseURL);
+console.log('URL de destino (Admin):', baseURL);
 
 const api = axios.create({
   baseURL: baseURL,

@@ -34,6 +34,7 @@ const Layout = () => {
                   <Link to="/servicios" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Servicios</Link>
                   <Link to="/flota" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Flota</Link>
                   <Link to="/clientes" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Clientes</Link>
+                  <Link to="/seguimiento" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Seguimiento</Link>
                   <Link to="/contacto" className="text-slate-900 hover:text-blue-700 font-semibold transition-colors">Contacto</Link>
                 </div>
                 <Link to="/reservas" className="bg-amber-500 hover:bg-amber-400 text-slate-900 px-6 py-2.5 rounded-lg font-bold shadow-md transform transition hover:-translate-y-1 whitespace-nowrap">

@@ -252,10 +252,11 @@ def asignar_ruta(request, payload: AsignarRutaSchema):
     if (vehiculo.kilometraje_actual - vehiculo.kilometraje_base) > 10000:
         raise HttpError(400, "Error: El vehículo requiere mantenimiento preventivo y no puede ser asignado (BR-03)")
         
-    # BR-02: Límite de Capacidad
-    if reserva.cantidad_pasajeros and vehiculo.capacidad_carga:
-        if reserva.cantidad_pasajeros > vehiculo.capacidad_carga:
-            raise HttpError(400, "Error: La cantidad de pasajeros supera la capacidad del vehículo seleccionado (BR-02)")
+    # BR-02 / RDm-01 (Aforo MTC): la cantidad de pasajeros no puede superar el
+    # número de asientos (capacidad) declarado en la tarjeta de propiedad del vehículo.
+    if reserva.cantidad_pasajeros and vehiculo.capacidad:
+        if reserva.cantidad_pasajeros > vehiculo.capacidad:
+            raise HttpError(400, "Error: La cantidad de pasajeros supera el aforo (asientos) del vehículo seleccionado (RDm-01 / BR-02)")
             
     # BR-01: Prevención de Solapamiento
     from django.db.models import Q

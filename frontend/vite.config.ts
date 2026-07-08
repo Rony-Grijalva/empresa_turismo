@@ -8,4 +8,13 @@ export default defineConfig({
     tailwindcss(),
     react(),
   ],
+  server: {
+    port: 5173,
+    strictPort: false,
+    // El proyecto está en una unidad de red; el watcher nativo falla (errno -4094).
+    // usePolling permite detectar cambios de archivos sobre el share de red.
+    watch: {
+      usePolling: true,
+    },
+  },
 })
