@@ -35,10 +35,21 @@ def crear_reserva(request, payload: ReservaCreateSchema):
     
     servicio = get_object_or_404(Servicio, id=payload.servicio_id)
 
-    # Generar código único de seguimiento con formato MG-AAAA-NNNN (RF-04)
+    # Generar código único de seguimiento con formato MG-AAAA-NNNN (RF-04).
+    # Se calcula desde el máximo correlativo existente INCLUYENDO las reservas con
+    # borrado lógico (all_objects), porque la restricción UNIQUE de codigo_reserva
+    # es a nivel de base de datos: reutilizar el número de una reserva eliminada
+    # lógicamente provocaría un error de clave duplicada.
     anio = date.today().year
-    correlativo = Reserva.objects.filter(codigo_reserva__startswith=f"MG-{anio}-").count() + 1
-    codigo = f"MG-{anio}-{correlativo:04d}"
+    prefijo = f"MG-{anio}-"
+    correlativos = []
+    for c in Reserva.all_objects.filter(codigo_reserva__startswith=prefijo).values_list('codigo_reserva', flat=True):
+        try:
+            correlativos.append(int(c.rsplit('-', 1)[1]))
+        except (ValueError, IndexError):
+            pass
+    siguiente = (max(correlativos) + 1) if correlativos else 1
+    codigo = f"{prefijo}{siguiente:04d}"
 
     reserva = Reserva.objects.create(
         codigo_reserva=codigo,
