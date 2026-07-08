@@ -17,7 +17,7 @@ const Login = () => {
 
     try {
       // Usando el endpoint por defecto de django-ninja-jwt (NinjaExtraAPI)
-      const response = await api.post('/token/pair', {
+      const response = await api.post('token/pair', {
         email: email,
         password: password,
       });

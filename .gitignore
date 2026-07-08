@@ -42,3 +42,5 @@ backend/mailbox/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+.env.development
