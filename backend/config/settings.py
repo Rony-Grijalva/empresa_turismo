@@ -170,4 +170,6 @@ EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=True)
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Multiservicios Grijalva <reservas@grijalva.pe>')
+# Tiempo máximo de espera del SMTP; evita que un servidor lento/bloqueado cuelgue el envío.
+EMAIL_TIMEOUT = env.int('EMAIL_TIMEOUT', default=10)
 

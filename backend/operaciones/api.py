@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from datetime import date
 import uuid
+import threading
 from uuid import UUID
 
 from operaciones.models import Reserva, Servicio, Vehiculo, Conductor, MensajeContacto
@@ -68,8 +69,10 @@ def crear_reserva(request, payload: ReservaCreateSchema):
         notas=payload.notas
     )
 
-    # RF-05: Enviar correo automático de confirmación al cliente
-    _enviar_correo_confirmacion(reserva, servicio)
+    # RF-05: Enviar el correo de confirmación en SEGUNDO PLANO (hilo aparte).
+    # Así la creación de la reserva responde de inmediato aunque el servidor SMTP
+    # esté lento o inaccesible (evita que el worker se cuelgue y devuelva 500).
+    threading.Thread(target=_enviar_correo_confirmacion, args=(reserva, servicio), daemon=True).start()
 
     return 201, reserva
 
